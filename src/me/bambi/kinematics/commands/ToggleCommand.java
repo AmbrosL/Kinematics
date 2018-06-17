@@ -4,6 +4,10 @@ import org.bukkit.command.CommandSender;
 
 public abstract class ToggleCommand extends KinematicsCommand {
 
+    public ToggleCommand(String name) {
+        super(name);
+    }
+
     protected abstract void set(boolean bool);
 
     protected abstract boolean get();

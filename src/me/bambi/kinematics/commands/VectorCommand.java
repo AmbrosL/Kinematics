@@ -4,6 +4,10 @@ import org.bukkit.command.CommandSender;
 
 public abstract class VectorCommand extends KinematicsCommand {
 
+    public VectorCommand(String name) {
+        super(name);
+    }
+
     protected abstract void setX(double d);
     protected abstract void setY(double d);
     protected abstract void setZ(double d);

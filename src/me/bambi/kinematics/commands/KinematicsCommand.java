@@ -12,10 +12,6 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
     protected HashSet<String> aliases = new HashSet<String>();
     protected static final String PREFIX = ChatColor.AQUA + "Kinematics " + ChatColor.GRAY;
 
-    public KinematicsCommand() {
-        this.name = this.getClass().getSimpleName();
-    }
-
     public KinematicsCommand(String name) {
         this.name = name.toLowerCase();
     }

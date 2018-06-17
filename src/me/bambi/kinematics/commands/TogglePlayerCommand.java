@@ -5,6 +5,10 @@ import org.bukkit.entity.Player;
 
 public abstract class TogglePlayerCommand extends KinematicsCommand {
 
+    public TogglePlayerCommand(String name) {
+        super(name);
+    }
+
     protected abstract void set(boolean bool, Player player);
 
     protected abstract boolean get(Player player);
