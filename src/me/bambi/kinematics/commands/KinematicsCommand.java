@@ -2,7 +2,6 @@ package me.bambi.kinematics.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -13,15 +12,17 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
     protected HashSet<String> aliases = new HashSet<String>();
     protected static final String PREFIX = ChatColor.AQUA + "Kinematics " + ChatColor.GRAY;
 
+    public KinematicsCommand() {
+        this.name = this.getClass().getSimpleName();
+    }
+
     public KinematicsCommand(String name) {
         this.name = name.toLowerCase();
     }
 
-    public abstract void execute(CommandSender sender, String[] args) throws KinematicsCommandException;
+    protected abstract void execute(CommandSender sender, String[] args) throws KinematicsCommandException;
 
-    public abstract void execute(Player player, String[] args) throws KinematicsCommandException;
-
-    public boolean execute(CommandSender sender, String label, String args[]) throws KinematicsCommandException {
+    protected boolean execute(CommandSender sender, String label, String args[]) throws KinematicsCommandException {
 
         if(!(label.equals(this.name) || aliases.contains(label))) {
             return false;
@@ -34,20 +35,17 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
             }
         }
 
-        if(sender instanceof Player) {
-            execute((Player)sender, args);
-        } else {
-            execute(sender, args);
-        }
+        execute(sender, args);
+
         return true;
     }
 
-    public List<String> TabComplete(CommandSender sender, String label, String[] args) {
+    protected List<String> TabComplete(CommandSender sender, String label, String[] args) {
         List<String> list = new ArrayList<String>();
         if(!(label.equals(this.name) || aliases.contains(label))) {
             return list;
         }
-        if(args.length > 1) {
+        if(args.length > 0) {
             String arg = args[0];
             String[] new_args = shiftargs(args);
             for(KinematicsCommand sub : subcommands) {
@@ -76,7 +74,7 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         return list;
     }
 
-    public List<String> TabComplete() {
+    protected List<String> TabComplete() {
         return Collections.emptyList();
     }
 
@@ -132,13 +130,35 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         }
     }
 
+    protected boolean parsBoolean(String arg) throws  KinematicsCommandException {
+        switch (arg.toLowerCase()) {
+            case "on":
+            case "enable":
+            case "en":
+            case "1":
+            case "true":
+                return true;
+            case "off":
+            case "disable":
+            case "dis":
+            case "0":
+            case "false":
+                return false;
+            default:
+                throw new KinematicsCommandException(String.format("Unable to pars %s to a boolean value", arg));
+        }
+    }
 
-    private String[] shiftargs(String[] args) {
-        String[] new_args = new String[args.length-1];
+    private String[] shiftargs(String[] args, int n) {
+        String[] new_args = new String[args.length-n];
         for(int i = new_args.length; i > 0; i--) {
-            new_args[i-1] = args[i];
+            new_args[i-n] = args[i];
         }
         return new_args;
+    }
+
+    private String[] shiftargs(String[] args) {
+        return this.shiftargs(args,1);
     }
 
     private String[] argstolowercase(String[] args) {
